@@ -61,12 +61,15 @@ localStorage.setItem('realaceclid', clientId);
         editor.getSession().setMode('ace/theme/javascript');
         // Hook up the editor to the model and vice versa
         editor.on("change", function () {
+          if (code.getText() === editor.getValue()) return;
           code.setText(editor.getValue());
         });
         code.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, function () {
+          if (code.getText() === editor.getValue()) return;
           editor.setValue(code.getText());
         });
         code.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, function () {
+          if (code.getText() === editor.getValue()) return;
           editor.setValue(code.getText());
         });
       }
