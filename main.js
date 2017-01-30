@@ -54,10 +54,11 @@ localStorage.setItem('realaceclid', clientId);
       }
 
       // After a file has been initialized and loaded, we can access the
-      // document. We will wire up the data model to the UI.
       function onFileLoaded(doc) {
         var code = doc.getModel().getRoot().get('code');
-        var editor = ace.edit('#editor');
+        var editor = ace.edit('editor');
+        editor.setTheme('ace/theme/terminal');
+        editor.getSession().setMode('ace/theme/javascript');
         // Hook up the editor to the model and vice versa
         editor.on("change", function () {
           code.setText(editor.getValue());
