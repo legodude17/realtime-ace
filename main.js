@@ -60,7 +60,7 @@ localStorage.setItem('realaceclid', clientId);
         var session = editor.getSession();
         var doc = session.getDocument();
         var AceRange = ace.require('ace/range').Range;
-        var ignoreChange = false;
+        var ignoreChange = {editor: false, code: false};
             window.code = code;
             window.editor = editor;
         editor.setTheme('ace/theme/terminal');
@@ -69,8 +69,9 @@ localStorage.setItem('realaceclid', clientId);
         // Hook up the editor to the model and vice versa
         editor.on("change", function (e) {
               console.log(ignoreChange);
-          if (ignoreChange) return;
+          if (ignoreChange.editor) return;
               console.log("Changing!", e);
+          ignoreChange.code = true;
           switch (e.action) {
             case "insert":
               code.insertString(doc.positionToIndex(e.start, 0), e.lines.join('\n'));
@@ -79,20 +80,23 @@ localStorage.setItem('realaceclid', clientId);
               code.removeRange(doc.positionToIndex(e.start, 0), doc.positionToIndex(e.end, 0));
               break;
           }
+          ignoreChange.code = false;
         });
         code.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, function (e) {
+          if (ignoreChange.code) return;
           var startIdx = e.index;
           var endIdx = startIdx + e.text.length;
           var startPos = doc.indexToPosition(startIdx, 0);
           var endPos = doc.indexToPosition(endIdx, 0);
           var range = new AceRange(startPos.row, startPos.column, endPos.row, endPos.column);
-          ignoreChange = true;
+          ignoreChange.editor = true;
           session.remove(range);
-          ignoreChange = false;
+          ignoreChange.editor = false;
         });
         code.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, function (e) {
-          ignoreChange = true;
+          if (ignoreChange.code) return;
+          ignoreChange.editor = true;
           session.insert(doc.indexToPosition(e.index, 0), e.text);
-          ignoreChange = false;
+          ignoreChange.editor = false;
         });
       }
