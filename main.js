@@ -68,8 +68,9 @@ localStorage.setItem('realaceclid', clientId);
         editor.setValue(code.getText());
         // Hook up the editor to the model and vice versa
         editor.on("change", function (e) {
-            console.log(ignoreChange);
+              console.log(ignoreChange);
           if (ignoreChange) return;
+              console.log("Changing!", e);
           switch (e.action) {
             case "insert":
               code.insertString(doc.positionToIndex(e.start, 0), e.lines.join('\n'));
