@@ -62,7 +62,7 @@ localStorage.setItem('realaceclid', clientId);
         var AceRange = ace.require('ace/range').Range;
         var ignoreChange = {editor: false, code: false};
         editor.setTheme('ace/theme/terminal');
-        session.setMode('ace/theme/javascript');
+        session.setMode('ace/mode/javascript');
         editor.setValue(code.getText());
         editor.$blockScrolling = Infinity;
         // Hook up the editor to the model and vice versa
