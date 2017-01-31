@@ -61,12 +61,15 @@ localStorage.setItem('realaceclid', clientId);
         var doc = session.getDocument();
         var AceRange = ace.require('ace/range').Range;
         var ignoreChange = false;
+            window.code = code;
+            window.editor = editor;
         editor.setTheme('ace/theme/terminal');
         session.setMode('ace/theme/javascript');
         editor.setValue(code.getText());
         // Hook up the editor to the model and vice versa
         editor.on("change", function (e) {
-              if (ignoreChange) return;
+            console.log(ignoreChange);
+          if (ignoreChange) return;
           switch (e.action) {
             case "insert":
               code.insertString(doc.positionToIndex(e.start, 0), e.lines.join('\n'));
