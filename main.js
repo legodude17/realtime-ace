@@ -57,19 +57,17 @@ localStorage.setItem('realaceclid', clientId);
       function onFileLoaded(doc) {
         var code = doc.getModel().getRoot().get('code');
         var editor = ace.edit('editor');
+        var session = editor.getSession();
         editor.setTheme('ace/theme/terminal');
-        editor.getSession().setMode('ace/theme/javascript');
+        session.setMode('ace/theme/javascript');
         // Hook up the editor to the model and vice versa
-        editor.on("change", function () {
-          if (code.getText() === editor.getValue()) return;
-          code.setText(editor.getValue());
+        editor.on("change", function (e) {
+          console.log("editorchange:", e);
         });
-        code.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, function () {
-          if (code.getText() === editor.getValue()) return;
-          editor.setValue(code.getText());
+        code.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, function (e) {
+          console.log("realtimedelete:", e);
         });
-        code.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, function () {
-          if (code.getText() === editor.getValue()) return;
-          editor.setValue(code.getText());
+        code.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, function (e) {
+          console.log("realtimeinsert:", e);
         });
       }
