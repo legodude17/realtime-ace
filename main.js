@@ -60,10 +60,13 @@ localStorage.setItem('realaceclid', clientId);
         var session = editor.getSession();
         var doc = session.getDocument();
         var AceRange = ace.require('ace/range').Range;
+        var ignoreChange = false;
         editor.setTheme('ace/theme/terminal');
         session.setMode('ace/theme/javascript');
+        editor.setValue(code.getText());
         // Hook up the editor to the model and vice versa
         editor.on("change", function (e) {
+              if (ignoreChange) return;
           switch (e.action) {
             case "insert":
               code.insertString(doc.positionToIndex(e.start, 0), e.lines.join('\n'));
@@ -79,9 +82,13 @@ localStorage.setItem('realaceclid', clientId);
           var startPos = doc.indexToPosition(startIdx, 0);
           var endPos = doc.indexToPosition(endIdx, 0);
           var range = new AceRange(startPos.row, startPos.column, endPos.row, endPos.column);
+          ignoreChange = true;
           session.remove(range);
+          ignoreChange = false;
         });
         code.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, function (e) {
+          ignoreChange = true;
           session.insert(doc.indexToPosition(e.index, 0), e.text);
+          ignoreChange = false;
         });
       }
