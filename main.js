@@ -61,16 +61,13 @@ localStorage.setItem('realaceclid', clientId);
         var doc = session.getDocument();
         var AceRange = ace.require('ace/range').Range;
         var ignoreChange = {editor: false, code: false};
-            window.code = code;
-            window.editor = editor;
         editor.setTheme('ace/theme/terminal');
         session.setMode('ace/theme/javascript');
         editor.setValue(code.getText());
+        editor.$blockScrolling = Infinity;
         // Hook up the editor to the model and vice versa
         editor.on("change", function (e) {
-              console.log(ignoreChange);
           if (ignoreChange.editor) return;
-              console.log("Changing!", e);
           ignoreChange.code = true;
           switch (e.action) {
             case "insert":
