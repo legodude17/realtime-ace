@@ -64,20 +64,33 @@ localStorage.setItem('realaceclid', clientId);
         editor.setTheme('ace/theme/terminal');
         session.setMode('ace/mode/javascript');
         editor.setValue(code.getText());
+        var val = editor.getValue();
         editor.$blockScrolling = Infinity;
+        function posToIdx(pos) {
+            var newLineChar = doc.getNewLineCharacter();
+            var newlineLength = newLineChar.length;
+            var lines = val.split(newLineChar);
+            var index = 0;
+            var row = Math.min(pos.row, lines.length);
+            for (var i = 0; i < row; ++i)
+                index += lines[i].length + newlineLength;
+
+            return index + pos.column;
+        }
         // Hook up the editor to the model and vice versa
         editor.on("change", function (e) {
           if (ignoreChange.editor) return;
           ignoreChange.code = true;
           switch (e.action) {
             case "insert":
-              code.insertString(doc.positionToIndex(e.start, 0), e.lines.join('\n'));
+              code.insertString(posToIdx(e.start, 0), e.lines.join('\n'));
               break;
             case "remove":
-              code.removeRange(doc.positionToIndex(e.start, 0), doc.positionToIndex(e.end, 0));
+              code.removeRange(posToIdx(e.start, 0), posToIdx(e.end, 0));
               break;
           }
           ignoreChange.code = false;
+          val = editor.getValue();
         });
         code.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, function (e) {
           if (ignoreChange.code) return;
