@@ -1,9 +1,4 @@
-var clientId = localStorage.getItem('realaceclid') || prompt('What is the client id?');
-
-      if (!/^([0-9])$/.test(clientId[0])) {
-        alert('Invalid Client ID');
-      }
-localStorage.setItem('realaceclid', clientId);
+var clientId = '881717743327-9jkr6e9gfustg1d6qs27i103u2jlji72.apps.googleusercontent.com';
       // Create a new instance of the realtime utility with your client ID.
       var realtimeUtils = new utils.RealtimeUtils({ clientId: clientId });
 
